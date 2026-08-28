@@ -1,0 +1,62 @@
+name: Raremode Quality Check
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  quality-check:
+    name: Build & Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check project files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          test -f README.md
+          echo "✓ Required project files found"
+
+      - name: Check HTML
+        run: |
+          grep -q "<!DOCTYPE html>" index.html
+          grep -q "<html" index.html
+          grep -q "</html>" index.html
+          echo "✓ HTML structure passed"
+
+      - name: Check CSS
+        run: |
+          test -s style.css
+          echo "✓ CSS stylesheet found and is not empty"
+
+      - name: Check JavaScript
+        run: |
+          test -s script.js
+          echo "✓ JavaScript file found and is not empty"
+
+      - name: Check README
+        run: |
+          grep -qi "Raremode" README.md
+          grep -qi "jean jackets" README.md
+          echo "✓ README documentation passed"
+
+      - name: Check repository structure
+        run: |
+          test -d assets
+          echo "✓ Assets directory found"
+
+      - name: Final status
+        run: |
+          echo "================================"
+          echo "RAREMODE QUALITY CHECK PASSED ✓"
+          echo "================================"
